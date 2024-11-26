@@ -19,7 +19,7 @@ public class EmployeeService {
         return employeeRepository.getAll();
     }
 
-    public Employee creat(Employee employee) throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
+    public Employee create(Employee employee) throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
         if (employee.getAge() < 18 || employee.getAge() > 65) {
             throw new EmployeeAgeNotValidException();
         }

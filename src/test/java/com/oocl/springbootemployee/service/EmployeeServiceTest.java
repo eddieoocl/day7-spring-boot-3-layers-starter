@@ -4,7 +4,6 @@ import com.oocl.springbootemployee.exception.EmployeeAgeNotValidException;
 import com.oocl.springbootemployee.exception.EmployeeUndersalaryException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
-import com.oocl.springbootemployee.repository.EmployeeRepository;
 import com.oocl.springbootemployee.repository.IEmployeeRepository;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +39,7 @@ class EmployeeServiceTest {
         EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
 
         //when
-        Employee createdEmployee = employeeService.creat(lucy);
+        Employee createdEmployee = employeeService.create(lucy);
 
         //then
         assertEquals("Lucy", createdEmployee.getName());
@@ -56,7 +55,7 @@ class EmployeeServiceTest {
 
         //when
         //then
-        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.create(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
 
@@ -70,7 +69,7 @@ class EmployeeServiceTest {
 
         //when
         //then
-        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.create(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
 
@@ -84,7 +83,7 @@ class EmployeeServiceTest {
 
         //when
         //then
-        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.creat(lucy));
+        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.create(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
 
@@ -98,7 +97,7 @@ class EmployeeServiceTest {
 
         //when
         //then
-        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.creat(lucy));
+        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.create(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(argThat(Employee::isActive));
     }
 }
