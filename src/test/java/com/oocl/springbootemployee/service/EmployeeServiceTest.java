@@ -1,6 +1,7 @@
 package com.oocl.springbootemployee.service;
 
 import com.oocl.springbootemployee.exception.EmployeeAgeNotValidException;
+import com.oocl.springbootemployee.exception.EmployeeInactiveException;
 import com.oocl.springbootemployee.exception.EmployeeUndersalaryException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
@@ -97,7 +98,22 @@ class EmployeeServiceTest {
 
         //when
         //then
-        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.create(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(argThat(Employee::isActive));
+    }
+
+    @Test
+    void should_throw_EmployeeInactiveException_when_update_inactive_employee() throws EmployeeInactiveException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        int id = 1;
+        Employee lucy = new Employee(id, "Lucy", 31, Gender.FEMALE, 8000.0);
+        lucy.setActive(false);
+        when(mockedEmployeeRepository.getEmployeeById(id)).thenReturn(lucy);
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        //then
+        assertThrows(EmployeeInactiveException.class, () -> employeeService.update(lucy.getId(), lucy));
+        verify(mockedEmployeeRepository, never()).updateEmployee(any(), any());
     }
 }

@@ -3,6 +3,7 @@ package com.oocl.springbootemployee.controller;
 
 import java.util.List;
 
+import com.oocl.springbootemployee.exception.EmployeeInactiveException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
 import com.oocl.springbootemployee.repository.EmployeeRepository;
@@ -54,7 +55,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Integer id, @RequestBody Employee employee) {
+    public Employee updateEmployee(@PathVariable Integer id, @RequestBody Employee employee) throws EmployeeInactiveException {
         return employeeService.update(id, employee);
     }
 

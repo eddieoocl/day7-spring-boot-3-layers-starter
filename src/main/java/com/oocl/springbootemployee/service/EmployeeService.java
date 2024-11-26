@@ -1,6 +1,7 @@
 package com.oocl.springbootemployee.service;
 
 import com.oocl.springbootemployee.exception.EmployeeAgeNotValidException;
+import com.oocl.springbootemployee.exception.EmployeeInactiveException;
 import com.oocl.springbootemployee.exception.EmployeeUndersalaryException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.repository.IEmployeeRepository;
@@ -29,8 +30,16 @@ public class EmployeeService {
         return employeeRepository.addEmployee(employee);
     }
 
-    public Employee update(Integer employeeId, Employee employee){
+    public Employee update(Integer employeeId, Employee employee) throws EmployeeInactiveException {
         Employee employeeExisted = employeeRepository.getEmployeeById(employeeId);
+
+        if (employeeExisted == null) {
+            return null;
+        }
+
+        if (!employeeExisted.isActive()) {
+            throw new EmployeeInactiveException();
+        }
 
         var nameToUpdate = employee.getName() == null ? employeeExisted.getName() : employee.getName();
         var ageToUpdate = employee.getAge() == null ? employeeExisted.getAge() : employee.getAge();
