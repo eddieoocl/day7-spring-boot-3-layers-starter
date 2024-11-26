@@ -1,5 +1,6 @@
 package com.oocl.springbootemployee.service;
 
+import com.oocl.springbootemployee.exception.EmployeeAgeNotValidException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
 import com.oocl.springbootemployee.repository.EmployeeRepository;
@@ -9,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class EmployeeServiceTest {
     @Test
@@ -30,7 +31,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_return_the_created_employee_when_create_given_a_employee() {
+    void should_return_the_created_employee_when_create_given_a_employee() throws EmployeeAgeNotValidException {
         //given
         IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
         Employee lucy = new Employee(1, "Lucy", 18, Gender.FEMALE, 8000.0);
@@ -42,5 +43,33 @@ class EmployeeServiceTest {
 
         //then
         assertEquals("Lucy", createdEmployee.getName());
+    }
+
+    @Test
+    void should_throw_EmployeeAgeNotValidException_when_create_given_an_underage_employee() throws EmployeeAgeNotValidException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 17, Gender.FEMALE, 8000.0);
+        when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        //then
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        verify(mockedEmployeeRepository, never()).addEmployee(any());
+    }
+
+    @Test
+    void should_throw_EmployeeAgeNotValidException_when_create_given_an_overage_employee() throws EmployeeAgeNotValidException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 66, Gender.FEMALE, 8000.0);
+        when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        //then
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
 }
