@@ -87,4 +87,18 @@ class EmployeeServiceTest {
         assertThrows(EmployeeUndersalaryException.class, () -> employeeService.creat(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
+
+    @Test
+    void should_create_active_employee_when_create_employee() throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 31, Gender.FEMALE, 8000.0);
+        when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        //then
+        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.creat(lucy));
+        verify(mockedEmployeeRepository, never()).addEmployee(argThat(Employee::isActive));
+    }
 }
