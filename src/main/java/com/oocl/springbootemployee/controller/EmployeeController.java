@@ -39,7 +39,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Integer id) {
-        return employeeRepository.getEmployeeById(id);
+        return employeeService.getEmployeeById(id);
     }
 
     @GetMapping(params = {"gender"})

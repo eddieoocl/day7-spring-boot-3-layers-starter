@@ -1,14 +1,17 @@
 package com.oocl.springbootemployee.service;
 
+import com.oocl.springbootemployee.exception.EmployeeNotFoundException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
 import com.oocl.springbootemployee.repository.EmployeeRepository;
 import com.oocl.springbootemployee.repository.IEmployeeRepository;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,5 +45,17 @@ class EmployeeServiceTest {
 
         //then
         assertEquals("Lucy", createdEmployee.getName());
+    }
+
+    @Test
+    void should_return_EmployeeNotFoundException_when_get_not_existing_employee() throws EmployeeNotFoundException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 18, Gender.FEMALE, 8000.0);
+        when(mockedEmployeeRepository.getEmployeeById(2)).thenThrow(new EmployeeNotFoundException());
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        Exception message = assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeById(2));
     }
 }

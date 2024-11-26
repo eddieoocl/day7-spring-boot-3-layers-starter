@@ -239,4 +239,14 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("EmployeeNotFoundException"));
     }
 
+    @Test
+    void should_return_employee_not_found_exception_with_404_status_when_get_a_not_existed_employee() throws Exception {
+        // given
+        int givenId = 99;
+        // when
+        // then
+        client.perform(MockMvcRequestBuilders.get("/employees/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("EmployeeNotFoundException"));
+    }
 }

@@ -14,6 +14,14 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    public Employee getEmployeeById(int employeeId) {
+        Employee employee = employeeRepository.getEmployeeById(employeeId);
+        if (employee == null) {
+            throw new EmployeeNotFoundException();
+        }
+        return employee;
+    }
+
     public List<Employee> getAllEmployees() {
         return employeeRepository.getAll();
     }
@@ -24,8 +32,9 @@ public class EmployeeService {
 
     public Employee update(Integer employeeId, Employee employee){
         Employee employeeExisted = employeeRepository.getEmployeeById(employeeId);
-        if(employeeExisted == null)
+        if (employeeExisted == null) {
             throw new EmployeeNotFoundException();
+        }
 
         var nameToUpdate = employee.getName() == null ? employeeExisted.getName() : employee.getName();
         var ageToUpdate = employee.getAge() == null ? employeeExisted.getAge() : employee.getAge();
