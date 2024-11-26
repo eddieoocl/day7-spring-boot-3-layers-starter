@@ -1,6 +1,7 @@
 package com.oocl.springbootemployee.service;
 
 import com.oocl.springbootemployee.exception.EmployeeAgeNotValidException;
+import com.oocl.springbootemployee.exception.EmployeeUndersalaryException;
 import com.oocl.springbootemployee.model.Employee;
 import com.oocl.springbootemployee.model.Gender;
 import com.oocl.springbootemployee.repository.EmployeeRepository;
@@ -31,7 +32,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_return_the_created_employee_when_create_given_a_employee() throws EmployeeAgeNotValidException {
+    void should_return_the_created_employee_when_create_given_a_employee() throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
         //given
         IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
         Employee lucy = new Employee(1, "Lucy", 18, Gender.FEMALE, 8000.0);
@@ -46,10 +47,10 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_throw_EmployeeAgeNotValidException_when_create_given_an_underage_employee() throws EmployeeAgeNotValidException {
+    void should_throw_EmployeeAgeNotValidException_when_create_given_an_underage_employee() throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
         //given
         IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
-        Employee lucy = new Employee(1, "Lucy", 17, Gender.FEMALE, 8000.0);
+        Employee lucy = new Employee(1, "Lucy", 17, Gender.FEMALE, 21000.0);
         when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
         EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
 
@@ -60,16 +61,30 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void should_throw_EmployeeAgeNotValidException_when_create_given_an_overage_employee() throws EmployeeAgeNotValidException {
+    void should_throw_EmployeeAgeNotValidException_when_create_given_an_overage_employee() throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
         //given
         IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
-        Employee lucy = new Employee(1, "Lucy", 66, Gender.FEMALE, 8000.0);
+        Employee lucy = new Employee(1, "Lucy", 66, Gender.FEMALE, 21000.0);
         when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
         EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
 
         //when
         //then
         assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        verify(mockedEmployeeRepository, never()).addEmployee(any());
+    }
+
+    @Test
+    void should_throw_EmployeeUndersalaryException_when_create_given_an_undersalary_employee() throws EmployeeAgeNotValidException, EmployeeUndersalaryException {
+        //given
+        IEmployeeRepository mockedEmployeeRepository = mock(IEmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 31, Gender.FEMALE, 8000.0);
+        when(mockedEmployeeRepository.addEmployee(any())).thenReturn(lucy);
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+
+        //when
+        //then
+        assertThrows(EmployeeUndersalaryException.class, () -> employeeService.creat(lucy));
         verify(mockedEmployeeRepository, never()).addEmployee(any());
     }
 }
